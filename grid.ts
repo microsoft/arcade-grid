@@ -113,6 +113,15 @@ namespace grid {
         currentGrid().place(sprite, loc);
     }
 
+    export function onGrid(sprite: Sprite): boolean {
+        const d = sprite.data()
+        const r = d[DATA_ROW]
+        const c = d[DATA_COL]
+        if (r === undefined || c === undefined)
+            return false
+        return true
+    }
+
     //% block="grid location of $sprite=variables_get(mySprite)"
     //% group="Location" blockGap=8
     export function getLocation(sprite: Sprite): tiles.Location {
@@ -136,7 +145,11 @@ namespace grid {
     //% block="move $sprite=variables_get(mySprite) by cols $columns rows $rows"
     //% group="Movement" blockGap=8
     export function move(sprite: Sprite, columns: number, rows: number) {
-        const loc = getLocation(sprite)
+        let loc = getLocation(sprite)
+        if (!loc) {
+            snap(sprite);
+            loc = getLocation(sprite)
+        }
         const c = locCol(loc)
         const r = locRow(loc)
         const newLoc = game.currentScene().tileMap.getTile(c + columns, r + rows)
@@ -164,21 +177,29 @@ namespace grid {
         return currentGrid().getSprites(c, r)
     }
 
+    // move with grid buttons registration
+    let _currentMoveSprite: Sprite = null;
+    controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
+        if (_currentMoveSprite)
+            move(_currentMoveSprite, 0, -1)
+    })
+    controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
+        if (_currentMoveSprite)
+            move(_currentMoveSprite, 0, 1)
+    })
+    controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
+        if (_currentMoveSprite)
+            move(_currentMoveSprite, -1, 0)
+    })
+    controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
+        if (_currentMoveSprite)
+            move(_currentMoveSprite, 1, 0)
+    })
+
     //% block="grid move $sprite=variables_get(mySprite) with buttons"
     //% group="Movement" blockGap=8
     export function moveWithButtons(sprite: Sprite) {
-        controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
-            move(sprite, 0, -1)
-        })
-        controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
-            move(sprite, 0, 1)
-        })
-        controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
-            move(sprite, -1, 0)
-        })
-        controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
-            move(sprite, 1, 0)
-        })
+        _currentMoveSprite = sprite;
     }
 
     //% block="array of sprites in row $row"
