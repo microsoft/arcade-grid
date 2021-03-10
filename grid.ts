@@ -316,6 +316,13 @@ namespace grid {
             s.vx = s.vy = s.ax = s.ay = 0;
         }
     }
+    
+    //% block="remove %sprite=variables_get(mySprite) from grid"
+    //% group="Placement" blockGap=8
+    export function remove(sprite: Sprite) {
+        currentGrid().remove(sprite);
+    }
+
 
     //% block="array of locations $dir of $loc=mapgettile || up to $dist tiles away"
     //% dir.shadow=gridDirectionEditor
