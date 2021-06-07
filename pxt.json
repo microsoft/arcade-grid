@@ -6,8 +6,6 @@
         "device": "*"
     },
     "files": [
-        "main.blocks",
-        "main.ts",
         "README.md",
         "grid.ts"
     ],
