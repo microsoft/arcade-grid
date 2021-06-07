@@ -153,7 +153,10 @@ namespace grid {
         const c = locCol(loc)
         const r = locRow(loc)
         const newLoc = game.currentScene().tileMap.getTile(c + columns, r + rows)
-        place(sprite, newLoc);        
+        place(sprite, newLoc);
+        if(game.currentScene().tileMap.isOnWall(sprite)) {
+            place(sprite, loc);
+        }        
     }
 
     //% block="swap $sprite1=variables_get(mySprite) and $sprite2=variables_get(mySprite2)"
